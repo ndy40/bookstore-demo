@@ -16,9 +16,31 @@ A simple API that provides a few CRUD functionalities around a bookstore. You ca
 4. Borrow books in store
 5. Return books back to store
 
-Once completed, I will write a brief write up on my experience of building a simple project using the Railway Oriented Programming using Python. 
+Once completed, I will write a brief writeup on my experience of building a simple project using the Railway Oriented Programming using Python. 
 I will also conclude with my verdict on whether I would recommend adopting this approach in a real world project. 
 
+### Structure
+
+```
+- project roots
+  | 
+  | - apps.py
+  | - cli.py
+  | - infrastructure/*
+	  | - db_context
+	  | - http 
+  | - domains/*
+      | - models.py
+      | - functions.py
+  | - workflows/*
+      | - create_book.py
+	  | - fetch_book.py
+	  | - search_books.py
+	  | - borrow_book.py
+	  | - return_book.py
+	  | - ....
+  | - tests/*
+```
 
 ## References
 * [Railway Oriented Programming](https://fsharpforfunandprofit.com/rop/)
