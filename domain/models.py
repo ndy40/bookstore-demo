@@ -1,32 +1,30 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional, List
 
+from pydantic import BaseModel
 
-class Author:
+
+class Author(BaseModel):
     first_name: str
     last_name: str
-    year_of_birth: Optional[datetime]
+    year_of_birth: Optional[date]
 
 
-class Publisher:
+class Publisher(BaseModel):
     name: str
 
 
-class Borrower:
+class Borrower(BaseModel):
     username: str
     email: str
 
 
-class BookAttributes:
+class BookAttributes(BaseModel):
     available_quantity: int
     borrowed_by: Optional[List[Borrower]]
 
 
-class Book:
+class Book(BaseModel):
     title: str
-    isbn: str
-    published_on: datetime
     author: Author
     genre: str
-    publisher: Publisher
-    status: BookAttributes
