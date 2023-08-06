@@ -4,11 +4,12 @@ from typing import Callable, Optional
 from pydantic import ValidationError
 
 from returns.pipeline import flow
-from returns.maybe import Maybe
+from returns.maybe import Maybe, Nothing
 from returns.pointfree import bind
 from returns.result import Result, Failure, Success, safe
 
 from domain.models import Book
+from infrastructure.db_context import repository
 
 # Type definitions
 
@@ -24,16 +25,20 @@ class BookSavedEvent:
 
 
 # Functions
-def check_books_exists(book: Book) -> Result[Book, ValueError]:
+def check_books_exists(book: Book) -> Result[Book, str]:
     return Success(book)
 
 
-@safe
-def validate_book(payload: dict) -> Book:
-    return Book(**payload)
+def validate_book(payload: dict) -> Result[Book, str]:
+    try:
+        return Success(Book(**payload))
+    except ValidationError as e:
+        return Failure('Missing fields when creating Book')
+
 
 @safe
-def save_book(book: Book):
+def save_book(book: Book) -> BookSavedEvent:
+    repository.create(book)
     return BookSavedEvent(book=book)
 
 
