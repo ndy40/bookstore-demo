@@ -53,4 +53,4 @@ def test_create_book_workflow_succeeds(book_model):
 @patch('infrastructure.db_context.repository.create')
 def test_create_book_returns_failure_when_error_happens_while_saving_book(repo, book_model):
     repo.side_effect = Exception('Database error')
-    assert create_new_book_workflow(book_model).failure()
+    assert isinstance(create_new_book_workflow(book_model).failure(), Exception)
