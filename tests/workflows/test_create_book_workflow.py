@@ -1,9 +1,9 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from returns.result import Success, Failure
 
 from domain.models import Book
-from workflows.create_book import create_new_book_workflow, BookSavedEvent
+from workflows.create_book import create_new_book_workflow
 
 
 def test_create_book_workflow_fails_with_invalid_book_payload():
@@ -11,8 +11,7 @@ def test_create_book_workflow_fails_with_invalid_book_payload():
         "title": "We go be",
         "author": {
             "first_name": "author 1",
-            "last_name": "author-lastname",
-            # missing year of birth of author
+            # missing last_name and year_of_birth
         },
         "genre": "pop"
     }
@@ -20,7 +19,7 @@ def test_create_book_workflow_fails_with_invalid_book_payload():
     assert create_new_book_workflow(payload) == Failure('Missing fields when creating Book')
 
 
-@patch('infrastructure.db_context.repository')
+@patch('infrastructure.db.connect.repository')
 def test_create_book_fails_when_book_already_exists(repo):
     repo.side_effect = ValueError('Item already exists')
     payload = {
@@ -33,7 +32,7 @@ def test_create_book_fails_when_book_already_exists(repo):
         "genre": "pop"
     }
 
-    assert create_new_book_workflow(payload) == Success(BookSavedEvent(book=Book(**payload)))
+    assert create_new_book_workflow(payload) == Success(Book(**payload))
 
 
 def test_create_book_workflow_succeeds(book_model):
@@ -47,10 +46,10 @@ def test_create_book_workflow_succeeds(book_model):
         "genre": "pop"
     }
 
-    assert create_new_book_workflow(book_model) == Success(BookSavedEvent(book=Book(**book_model)))
+    assert create_new_book_workflow(book_model) == Success(Book(**book_model))
 
 
-@patch('infrastructure.db_context.repository.create')
+@patch('infrastructure.db.connect.repository.create')
 def test_create_book_returns_failure_when_error_happens_while_saving_book(repo, book_model):
     repo.side_effect = Exception('Database error')
     assert isinstance(create_new_book_workflow(book_model).failure(), Exception)

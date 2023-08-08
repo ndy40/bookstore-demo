@@ -1,0 +1,4 @@
+# connection string
+
+mongodb+srv://bookdatastore:bookdatastorepassword@cluster0.w7irjsw.mongodb.net/?retryWrites=true&w=majority
+

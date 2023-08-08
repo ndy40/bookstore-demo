@@ -1,27 +1,21 @@
 import dataclasses
-from typing import Callable, Optional
+from typing import Callable, Optional, Any
 
 from pydantic import ValidationError
 
 from returns.pipeline import flow
-from returns.maybe import Maybe, Nothing
+from returns.maybe import Maybe
 from returns.pointfree import bind
 from returns.result import Result, Failure, Success, safe
 
 from domain.models import Book
-from infrastructure.db_context import repository
+from infrastructure.db.connect import repository
 
 # Type definitions
 
 CheckBookExistCallable = Callable[[Book], Result[Book, ValueError]]
 SaveBookCallable = Callable[[Success[Book]], Result[Book, ValueError]]
 ValidateBookCallable = Callable[[Maybe[Book]], Result[Book, ValueError]]
-
-
-@dataclasses.dataclass
-class BookSavedEvent:
-    book: Book
-    msg: Optional[str] = "Book created"
 
 
 # Functions
@@ -37,23 +31,14 @@ def validate_book(payload: dict) -> Result[Book, str]:
 
 
 @safe
-def save_book(book: Book) -> BookSavedEvent:
-    repository.create(book)
-    return BookSavedEvent(book=book)
+def save_book(book: Book) -> Book:
+    doc = repository.create(book)
+    return Book(**doc.dict())
 
 
 # Workflow
 
-def create_new_book_workflow(request: dict):
-    """
-    workflow steps:
-    1. Serialize to model
-    2. Validate Book
-    3. Check if book exists
-    4. Save book to db
-    5. Send response
-    """
-    ...
+def create_new_book_workflow(request: dict) -> Result[Book, Any]:
     return flow(
         Success(request),
         bind(validate_book),

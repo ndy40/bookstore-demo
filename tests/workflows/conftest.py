@@ -1,7 +1,7 @@
 import pytest
 
 from domain.models import Book
-from infrastructure.db_context import repository
+from infrastructure.db.connect import repository
 
 
 @pytest.fixture
