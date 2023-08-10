@@ -18,3 +18,6 @@ class Book(Document):
 
     class Settings:
         name = "books"
+        bson_encoders = {
+            date: lambda dt: dt.isoformat()
+        }
