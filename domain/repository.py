@@ -21,8 +21,6 @@ class BaseRepository(abc.ABC):
 class InMemoryRepository(BaseRepository, ABC):
     items: List[Any] = []
 
-    pk: int = 1
-
     def clear(self):
         self.items = []
 
@@ -30,10 +28,18 @@ class InMemoryRepository(BaseRepository, ABC):
         if obj not in self.items:
             obj.id = OID(ObjectId())
             self.items.append(obj)
-            self.pk += 1
             return obj
 
         raise ValueError('Item already exists')
+
+    def find_by_id(self, model, obj_id: str) -> None | object:
+        try:
+            return model(**(next(filter(lambda x: x.id == obj_id, self.items))).dict())
+        except StopIteration as e:
+            print(e)
+
+    def update(self, model, attr) -> None:
+        ...
 
 
 class MongoDbRepository(BaseRepository, ABC):

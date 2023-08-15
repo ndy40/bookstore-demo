@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import HTTPException
 from fastapi import status
 from returns.result import Result, Success, Failure
-from returns.maybe import Nothing
+from returns.maybe import Maybe
 
 
 def handle_response(response: Result[Any, Any]):
@@ -12,7 +12,7 @@ def handle_response(response: Result[Any, Any]):
             return item
         case Failure(msg):
             match msg:
-                case Nothing(_):
+                case Maybe.nothing:
                     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
                 case _:
                     return msg

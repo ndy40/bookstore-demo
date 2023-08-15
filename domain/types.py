@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from pydantic import BaseModel
 
 from domain import Author
-from domain.models import BookAttributes
+from domain.models import BookAttributes, OID
 
 
 class CreateBookRequest(BaseModel):
@@ -20,4 +20,4 @@ class UpdateBookRequest(BaseModel):
     attributes: Optional[BookAttributes]
 
 
-UpdateBookInput = Tuple[int, UpdateBookRequest]
+UpdateBookInput = Tuple[OID, UpdateBookRequest]
