@@ -11,7 +11,6 @@ def handle_response(response: Result[Any, Any]):
         case Success(item):
             return item
         case Failure(msg):
-            print(msg)
             match msg:
                 case Nothing(_):
                     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")

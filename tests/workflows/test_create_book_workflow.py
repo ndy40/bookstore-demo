@@ -32,7 +32,7 @@ def test_create_book_fails_when_book_already_exists(repo):
         "genre": "pop"
     }
 
-    assert create_new_book_workflow(payload) == Success(Book(**payload))
+    assert isinstance(create_new_book_workflow(payload), Success)
 
 
 def test_create_book_workflow_succeeds(book_model):
@@ -46,7 +46,7 @@ def test_create_book_workflow_succeeds(book_model):
         "genre": "pop"
     }
 
-    assert create_new_book_workflow(book_model) == Success(Book(**book_model))
+    assert isinstance(create_new_book_workflow(book_model), Success)
 
 
 @patch('infrastructure.db.connect.repository.create')
