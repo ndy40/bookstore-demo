@@ -1,13 +1,4 @@
-from typing import Union
-from unittest.mock import patch
-
 import pytest
-from _pytest.config import ExitCode
-from _pytest.main import Session
-
-from domain.models import Book
-from domain.repository import InMemoryRepository, MongoBooksRepo
-from infrastructure.db.connect import book_repository
 
 
 @pytest.fixture
@@ -21,7 +12,3 @@ def book_model():
         },
         "genre": "pop"
     }
-
-
-def pytest_sessionfinish(session: Session, exitstatus: Union[int, ExitCode]):
-    MongoBooksRepo().model.delete()

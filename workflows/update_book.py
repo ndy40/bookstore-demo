@@ -3,13 +3,18 @@ from typing import Dict
 
 from returns import pointfree
 from returns._internal.pipeline.flow import flow
-from returns.pointfree import bind
+from returns.curry import curry
+from returns.io import IO
+from returns.pointfree import bind, apply
 from returns.result import safe, Result, Success, Failure
 
 from domain import Book
+from domain.repository import MongoBooksRepository
 from domain.types import UpdateBookInput
-from infrastructure.db.connect import book_repository
+from infrastructure.db.connect import client
 
+
+book_repository = MongoBooksRepository(client)
 
 def get_book(book_param: UpdateBookInput) -> Result[Book, str]:
     obj_id, _ = book_param
@@ -22,6 +27,7 @@ def get_book(book_param: UpdateBookInput) -> Result[Book, str]:
     return Failure('Book not found')
 
 
+@curry
 @safe
 def update_book_attr(book: Book, attr: Dict) -> Book:
     for key, value in attr.items():
@@ -34,7 +40,8 @@ def save_book(obj):
 
 
 def update_book(book_update: UpdateBookInput) -> Book:
-    update_attr_partial = partial(update_book_attr, attr=book_update[1].dict())
+    update_attr_partial = update_book_attr(attr=book_update[1].dict())
+
     return flow(
         book_update,
         get_book,

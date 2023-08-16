@@ -1,26 +1,31 @@
+from unittest.mock import patch
+
 from returns.result import Failure, Success
 
 from domain.models import OID
+from domain.repository import InMemoryRepository
 from domain.types import UpdateBookRequest
 from workflows import create_new_book_workflow
 from workflows.update_book import update_book
 
 
-def test_update_book_returns_failure_when_book_not_exists(_):
+def test_update_book_returns_failure_when_book_not_exists():
     req = UpdateBookRequest(title='random')
     data = (OID(), req)
     result = update_book(data)
     assert isinstance(result, Failure)
 
 
-def test_update_book_returns_success_when_updating_book(_, book_model):
-    new_book = create_new_book_workflow(book_model).unwrap()
+def test_update_book_returns_success_when_updating_book(book_model):
+    with patch('workflows.create_book.book_repository', new_callable=InMemoryRepository):
+        new_book = create_new_book_workflow(book_model).unwrap()
 
-    update_attr = {
-        "title": "updated title"
-    }
+        with patch('workflows.update_book.book_repository', new_callable=InMemoryRepository):
+            update_attr = {
+                "title": "updated title"
+            }
 
-    req = UpdateBookRequest(**update_attr)
-    params = (new_book.id, req)
-    result = update_book(params)
-    assert isinstance(result, Success)
+            req = UpdateBookRequest(**update_attr)
+            params = (new_book.id, req)
+            result = update_book(params)
+            assert isinstance(result, Success)

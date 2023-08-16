@@ -18,24 +18,29 @@ class BaseRepository(abc.ABC):
         ...
 
 
+items: List[Any] = []
+
 class InMemoryRepository(BaseRepository, ABC):
-    items: List[Any] = []
 
     def clear(self):
         self.items = []
 
     def create(self, obj) -> None:
+
         if obj not in self.items:
             obj.id = OID(ObjectId())
-            self.items.append(obj)
+            items.append(obj)
             return obj
 
         raise ValueError('Item already exists')
 
-    def find_by_id(self, model, obj_id: str) -> None | object:
-        for item in self.items:
+    def find_by_id(self, model, obj_id) -> None | object:
+        for item in items:
             if item.id == obj_id:
                 return model(**item.dict())
+    @property
+    def items(self):
+        return items
 
     def update(self, model, attr) -> None:
         ...
@@ -58,9 +63,10 @@ class MongoDbRepository(BaseRepository, ABC):
     def items(self):
         return self.model.all()
 
-    def find_by_id(self, model, obj_id: str) -> None | Document:
+    def find_by_id(self, model, obj_id: ObjectId | Any) -> None | Document:
+        print('this was called.')
         ...
 
 
-class MongoBooksRepo(MongoDbRepository):
+class MongoBooksRepository(MongoDbRepository):
     model = schema.Book
