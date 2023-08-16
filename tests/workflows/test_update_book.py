@@ -1,28 +1,26 @@
 from returns.result import Failure, Success
 
-from domain import Book
-from domain.types import UpdateBookRequest, UpdateBookInput
-from infrastructure.db.connect import repository
+from domain.models import OID
+from domain.types import UpdateBookRequest
 from workflows import create_new_book_workflow
 from workflows.update_book import update_book
 
 
-def test_update_book_returns_failure_when_book_not_exists():
+def test_update_book_returns_failure_when_book_not_exists(_):
     req = UpdateBookRequest(title='random')
-    data = (100, req)
+    data = (OID(), req)
     result = update_book(data)
     assert isinstance(result, Failure)
 
 
-def test_update_book_returns_success_when_updating_book(book_model):
-    create_new_book_workflow(book_model)
+def test_update_book_returns_success_when_updating_book(_, book_model):
+    new_book = create_new_book_workflow(book_model).unwrap()
 
     update_attr = {
         "title": "updated title"
     }
 
     req = UpdateBookRequest(**update_attr)
-
-    params = (repository.items[0].id, req)
+    params = (new_book.id, req)
     result = update_book(params)
     assert isinstance(result, Success)

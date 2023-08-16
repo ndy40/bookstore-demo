@@ -1,9 +1,6 @@
 import uvicorn
-from dotenv import load_dotenv
 
 from infrastructure.http.rest import app
-
-load_dotenv()
 
 
 def main():

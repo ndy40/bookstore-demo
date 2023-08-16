@@ -9,7 +9,7 @@ from returns.pointfree import bind
 from returns.result import Result, Failure, Success, safe
 
 from domain.models import Book
-from infrastructure.db.connect import repository
+from infrastructure.db.connect import book_repository
 
 # Type definitions
 
@@ -32,7 +32,7 @@ def validate_book(payload: dict) -> Result[Book, str]:
 
 @safe
 def save_book(book: Book) -> Book:
-    doc = repository.create(book)
+    doc = book_repository.create(book)
     return Book(**doc.dict())
 
 

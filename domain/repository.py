@@ -1,6 +1,6 @@
 import abc
 from abc import ABC
-from typing import List, Any
+from typing import List, Any, Protocol
 
 from bson import ObjectId
 from bunnet import Document
@@ -33,22 +33,34 @@ class InMemoryRepository(BaseRepository, ABC):
         raise ValueError('Item already exists')
 
     def find_by_id(self, model, obj_id: str) -> None | object:
-        try:
-            return model(**(next(filter(lambda x: x.id == obj_id, self.items))).dict())
-        except StopIteration as e:
-            print(e)
+        for item in self.items:
+            if item.id == obj_id:
+                return model(**item.dict())
 
     def update(self, model, attr) -> None:
         ...
 
 
 class MongoDbRepository(BaseRepository, ABC):
+    model = Document
+
     def __init__(self, client):
         self.client = client
 
     def create(self, obj: models.Book) -> Document:
-        book = schema.Book(**obj.dict())
+        book = self.model(**obj.dict())
         return book.insert()
 
-    def list(self, model: Document) -> FindMany:
-        return model.find()
+    def list(self) -> FindMany:
+        return self.model.find()
+
+    @property
+    def items(self):
+        return self.model.all()
+
+    def find_by_id(self, model, obj_id: str) -> None | Document:
+        ...
+
+
+class MongoBooksRepo(MongoDbRepository):
+    model = schema.Book

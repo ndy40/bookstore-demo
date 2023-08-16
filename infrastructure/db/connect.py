@@ -3,18 +3,15 @@ import os
 from bunnet import init_bunnet
 from pymongo import MongoClient
 
-from domain.repository import InMemoryRepository, MongoDbRepository, BaseRepository
+from domain.repository import MongoDbRepository, BaseRepository, MongoBooksRepo
 from infrastructure.config import config
 from infrastructure.db.schema import Book
 
 
 def get_mongodb_repo() -> BaseRepository:
     client = MongoClient(config.MONGODB_URL)
-    init_bunnet(database=client.bookstore, document_models=[Book])
-    return MongoDbRepository(client)
+    init_bunnet(database=getattr(client, config.db_name), document_models=[Book])
+    return MongoBooksRepo(client)
 
 
-repository = (
-    InMemoryRepository()
-    if os.environ.get('APP_ENV') == 'test' else get_mongodb_repo()
-)
+book_repository = get_mongodb_repo()

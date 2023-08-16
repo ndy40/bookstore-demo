@@ -3,6 +3,7 @@ from unittest.mock import patch
 from returns.result import Success, Failure
 
 from domain.models import Book
+from domain.repository import InMemoryRepository
 from workflows.create_book import create_new_book_workflow
 
 
@@ -35,7 +36,7 @@ def test_create_book_fails_when_book_already_exists(repo):
     assert isinstance(create_new_book_workflow(payload), Success)
 
 
-def test_create_book_workflow_succeeds(book_model):
+def test_create_book_workflow_succeeds(_, book_model):
     payload = {
         "title": "We go be",
         "author": {
@@ -49,7 +50,6 @@ def test_create_book_workflow_succeeds(book_model):
     assert isinstance(create_new_book_workflow(book_model), Success)
 
 
-@patch('infrastructure.db.connect.repository.create')
 def test_create_book_returns_failure_when_error_happens_while_saving_book(repo, book_model):
     repo.side_effect = Exception('Database error')
     assert isinstance(create_new_book_workflow(book_model).failure(), Exception)
