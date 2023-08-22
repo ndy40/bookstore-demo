@@ -33,3 +33,13 @@ def replace_book(book: CreateBookRequest) -> Optional[Book]:
     If you need to replace the entire book object with updated values.
     """
     ...
+
+
+@book_route.post("/{id}/borrow")
+def borrow_book(id: str):
+    ...
+
+
+@book_route.post("/{id}/return")
+def borrow_book(id: str):
+    ...
