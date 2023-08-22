@@ -4,6 +4,8 @@ from typing import Optional
 from bunnet import Document
 from pydantic import BaseModel
 
+from domain.types import BookAttributes
+
 
 class Author(BaseModel):
     first_name: str
@@ -15,6 +17,7 @@ class Book(Document):
     title: str
     author: Author
     genre: str
+    attributes: Optional[BookAttributes] = None
 
     class Settings:
         name = "books"

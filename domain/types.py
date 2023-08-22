@@ -1,9 +1,23 @@
-from typing import Optional, Tuple
+from datetime import date
+from typing import Optional, Tuple, List, Any
 
 from pydantic import BaseModel
 
-from domain import Author
-from domain.models import BookAttributes, OID
+
+class Author(BaseModel):
+    first_name: str
+    last_name: str
+    year_of_birth: Optional[date]
+
+
+class Borrower(BaseModel):
+    username: str
+    email: str
+
+
+class BookAttributes(BaseModel):
+    available_quantity: Optional[int] = 0
+    borrowed_by: Optional[List[Borrower]] = None
 
 
 class CreateBookRequest(BaseModel):
@@ -20,4 +34,4 @@ class UpdateBookRequest(BaseModel):
     attributes: Optional[BookAttributes]
 
 
-UpdateBookInput = Tuple[OID, UpdateBookRequest]
+UpdateBookInput = Tuple[str, UpdateBookRequest]
