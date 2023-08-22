@@ -23,8 +23,8 @@ def list_books() -> List[Book]:
 
 
 @book_route.patch('/{id}', name='Update book fields')
-def update_book(id: int, book: UpdateBookRequest) -> Optional[Book]:
-    return workflows.update_book(UpdateBookInput(id, book))
+def update_book(book_id: int, book: UpdateBookRequest) -> Optional[Book]:
+    return workflows.update_book(UpdateBookInput(book_id, book))
 
 
 @book_route.put('/{id}', name="Replace book with new attributes")

@@ -1,11 +1,8 @@
-from functools import partial
 from typing import Dict
 
-from returns import pointfree
 from returns._internal.pipeline.flow import flow
 from returns.curry import curry
-from returns.io import IO
-from returns.pointfree import bind, apply
+from returns.pointfree import bind
 from returns.result import safe, Result, Success, Failure
 
 from domain import Book
@@ -13,8 +10,8 @@ from domain.repository import MongoBooksRepository
 from domain.types import UpdateBookInput
 from infrastructure.db.connect import client
 
-
 book_repository = MongoBooksRepository(client)
+
 
 def get_book(book_param: UpdateBookInput) -> Result[Book, str]:
     obj_id, _ = book_param
@@ -33,6 +30,7 @@ def update_book_attr(book: Book, attr: Dict) -> Book:
     for key, value in attr.items():
         setattr(book, key, value)
     return book
+
 
 @safe
 def save_book(obj):

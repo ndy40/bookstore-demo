@@ -63,8 +63,7 @@ class MongoDbRepository(BaseRepository, ABC):
     def items(self):
         return self.model.all()
 
-    def find_by_id(self, model, obj_id: ObjectId | Any) -> None | Document:
-        print('this was called.')
+    def find_by_id(self, obj_id: ObjectId | Any) -> None | Document:
         ...
 
 

@@ -1,8 +1,9 @@
-from datetime import date
-from typing import Optional, List
+from typing import Optional
 
 from pydantic import BaseModel
 from bson.objectid import ObjectId
+
+from domain.types import BookAttributes, Author
 
 
 class OID(ObjectId):
@@ -32,24 +33,8 @@ class BaseEntity(BaseModel):
         json_encoders = {ObjectId: lambda oid: str(oid)}
 
 
-class Author(BaseModel):
-    first_name: str
-    last_name: str
-    year_of_birth: Optional[date]
-
-
 class Publisher(BaseModel):
     name: str
-
-
-class Borrower(BaseModel):
-    username: str
-    email: str
-
-
-class BookAttributes(BaseModel):
-    available_quantity: Optional[int] = 0
-    borrowed_by: Optional[List[Borrower]]
 
 
 class Book(BaseEntity):
