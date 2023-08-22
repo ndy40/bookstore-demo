@@ -9,11 +9,7 @@ from returns.pointfree import bind
 from returns.result import Result, Failure, Success, safe
 
 from domain.models import Book
-from domain.repository import MongoBooksRepository
-from infrastructure.db.connect import client
-
-
-book_repository = MongoBooksRepository(client)
+from infrastructure.db.connect import book_repository
 
 # Type definitions
 

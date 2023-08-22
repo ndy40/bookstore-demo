@@ -1,5 +1,8 @@
 import pytest
 
+from infrastructure.config import config
+from infrastructure.db.connect import book_repository
+
 
 @pytest.fixture
 def book_model():
@@ -12,3 +15,7 @@ def book_model():
         },
         "genre": "pop"
     }
+
+
+def pytest_sessionfinish(session, exitstatus):
+    book_repository.client.drop_database(name_or_database=config.db_name)

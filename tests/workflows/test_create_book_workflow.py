@@ -2,7 +2,6 @@ from unittest.mock import patch
 
 from returns.result import Success, Failure
 
-from domain.repository import InMemoryRepository
 from workflows.create_book import create_new_book_workflow
 
 
@@ -18,10 +17,9 @@ def test_create_book_workflow_fails_with_invalid_book_payload():
 
     assert create_new_book_workflow(payload) == Failure('Missing fields when creating Book')
 
-
-@patch('domain.repository.MongoBooksRepository')
-def test_create_book_fails_when_book_already_exists(db):
-    db.side_effect = ValueError('Item already exists')
+@patch('workflows.create_book.check_books_exists')
+def test_create_book_fails_when_book_already_exists(func_book_exists):
+    func_book_exists.return_value = Failure("Item already exists")
     payload = {
         "title": "We go be",
         "author": {
@@ -32,11 +30,10 @@ def test_create_book_fails_when_book_already_exists(db):
         "genre": "pop"
     }
 
-    assert isinstance(create_new_book_workflow(payload), Success)
+    assert isinstance(create_new_book_workflow(payload), Failure)
 
 
-@patch('workflows.create_book.book_repository', new_callable=InMemoryRepository)
-def test_create_book_workflow_succeeds(_, book_model):
+def test_create_book_workflow_succeeds(book_model):
     assert isinstance(create_new_book_workflow(book_model), Success)
 
 

@@ -15,10 +15,10 @@ class Config(BaseSettings):
 
     @property
     def db_name(self):
-        if self.APP_ENV == 'test':
-            return 'bookstore_tests'
+        # if self.APP_ENV == 'test':
+        return 'bookstore_tests'
 
-        return self.DB_NAME
+        # return self.DB_NAME
 
 
 config = Config()  # type: ignore

@@ -3,12 +3,8 @@ from typing import List
 from returns.result import safe
 
 from domain import Book
-from domain.repository import MongoBooksRepository
 from infrastructure.db import schema
-from infrastructure.db.connect import client
-
-
-book_repository = MongoBooksRepository(client)
+from infrastructure.db.connect import book_repository
 
 
 @safe
