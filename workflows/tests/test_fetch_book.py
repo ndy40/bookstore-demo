@@ -8,8 +8,7 @@ from workflows import create_new_book_workflow, fetch_book
 
 
 def test_fetch_book_returns_nothing_if_book_not_found():
-    new_id_not_exists = OID()
-    result = fetch_book(new_id_not_exists)
+    result = fetch_book(OID())
     assert isinstance(result, Failure)
 
 

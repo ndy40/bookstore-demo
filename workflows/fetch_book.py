@@ -23,7 +23,7 @@ def get_book_by_id(id: OID) -> Result[Book, Any]:
             return Failure(Nothing)
 
 
-def fetch_book(id: str) -> Result[Book, str]:
+def fetch_book(id: str | OID) -> Result[Book, str]:
     return flow(
         OID(id),
         get_book_by_id,
