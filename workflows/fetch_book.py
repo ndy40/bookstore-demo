@@ -2,7 +2,7 @@ from typing import Any
 
 import pymongo.errors
 from returns._internal.pipeline.flow import flow
-from returns.maybe import Maybe, Nothing
+from returns.maybe import Nothing
 from returns.result import Result, Success, Failure
 
 from domain.models import OID, Book
@@ -23,7 +23,7 @@ def get_book_by_id(id: OID) -> Result[Book, Any]:
             return Failure(Nothing)
 
 
-def fetch_book(id: str) -> Result[Maybe[Book], str]:
+def fetch_book(id: str) -> Result[Book, str]:
     return flow(
         OID(id),
         get_book_by_id,

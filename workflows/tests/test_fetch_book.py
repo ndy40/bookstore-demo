@@ -1,6 +1,5 @@
 from unittest.mock import patch
 
-from returns.maybe import Nothing, Some
 from returns.result import Failure, Success
 
 from domain.models import OID
@@ -11,12 +10,12 @@ from workflows import create_new_book_workflow, fetch_book
 def test_fetch_book_returns_nothing_if_book_not_found():
     new_id_not_exists = OID()
     result = fetch_book(new_id_not_exists)
-    assert result.unwrap() == Nothing
+    assert isinstance(result, Failure)
 
 
 @patch("workflows.fetch_book.book_repository")
 def test_nothing_returned_on_db_error(repo):
-    repo.find_by_id.side_effect = Exception("DB Error")
+    repo.side_effect = Exception("DB Error")
     new_id = OID()
     result = fetch_book(new_id)
     assert isinstance(result, Failure)
@@ -27,4 +26,3 @@ def test_success_returned_when_book_found(book_model):
     book = create_new_book_workflow(request.dict())
     result = fetch_book(book.unwrap().id)
     assert isinstance(result, Success)
-    assert isinstance(result.unwrap(), Some)
