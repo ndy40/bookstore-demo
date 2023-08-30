@@ -23,23 +23,25 @@ def list_books() -> List[Book]:
 
 
 @book_route.patch("/{id}", name="Update book fields")
-def update_book(id: int, book: UpdateBookRequest) -> Optional[Book]:
+def update_book(id: str, book: UpdateBookRequest) -> Optional[Book]:
     return handle_response(workflows.update_book(UpdateBookInput(id, book)))
 
 
-@book_route.put("/{id}", name="Replace book with new attributes")
-def replace_book(book: CreateBookRequest) -> Optional[Book]:
-    """
-    If you need to replace the entire book object with updated values.
-    """
+@book_route.get("/{id}", name="Get book")
+def get_book(id: str) -> Optional[Book]:
+    return handle_response(workflows.fetch_book(id))
+
+
+@book_route.delete("/{id}")
+def delete_book(id: str) -> None:
     ...
 
 
-@book_route.post("/{id}/borrow")
+@book_route.post("/{id}/borrow-book")
 def borrow_book(id: str):
     ...
 
 
-@book_route.post("/{id}/return")
+@book_route.post("/{id}/return-book")
 def borrow_book(id: str):
     ...

@@ -1,11 +1,8 @@
-from functools import partial
-from typing import Dict
+from typing import Dict, Any
 
-from returns import pointfree
 from returns._internal.pipeline.flow import flow
 from returns.curry import curry
-from returns.io import IO
-from returns.pointfree import bind, apply
+from returns.pointfree import bind
 from returns.result import safe, Result, Success, Failure
 
 from domain import Book
@@ -19,7 +16,7 @@ def get_book(book_param: UpdateBookInput) -> Result[Book, str]:
 
     if find_obj:
         return Success(find_obj)
-    return Failure('Book not found')
+    return Failure("Book not found")
 
 
 @curry
@@ -30,18 +27,19 @@ def update_book_attr(book: Book, attr: Dict) -> Book:
             setattr(book, key, value)
     return book
 
+
 @safe
 def save_book(obj):
     book_repository.update(obj)
     return Success(obj)
 
 
-def update_book(book_update: UpdateBookInput) -> Book:
+def update_book(book_update: UpdateBookInput) -> Result[Book, Any]:
     update_attr_partial = update_book_attr(attr=book_update[1].dict())
 
     return flow(
         book_update,
         get_book,
         bind(update_attr_partial),
-        bind(save_book)
+        bind(save_book),
     )
